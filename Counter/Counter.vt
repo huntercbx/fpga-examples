@@ -1,42 +1,35 @@
 `timescale 1 ms/ 1 ms
 
-module RCC_testbench();
+// Testbench module usually has no parameters
+module Counter_testbench();
 
-// test vector input registers
-reg clk;
-reg reset;
+	// input registers
+	reg clk;
+	reg reset;
 
-// wires                                               
-wire [3:0]  q;
+	// wires                                               
+	wire [3:0]  q;
 
-// assign statements (if any)                          
-RCC i1 (
-	// port map - connection between master ports and signals/registers   
-	.clk(clk),
-	.q(q),
-	.reset(reset)
-);
+	// Device Under Test                          
+	Counter DUT (
+		// port map - connection between master ports and signals/registers   
+		.clk(clk),
+		.q(q),
+		.reset(reset)
+	);
 
-initial
-begin                                                  
-// code that executes only once                        
-// insert code here --> begin   
+	// code that executes only once                        
+	initial begin                                                  
+		clk = 1'b0;         // Initialize the clk
+		reset = 1'b1;       // Reset the counter
+		
+		#5  reset = 1'b0;
+		#75 reset = 1'b1;
+		#5  reset = 1'b0;
+		#25 $finish;
+	end
 
-	// Initialize the clk
-	clk = 1'b0;
-
-	// Reset the counter
-	reset = 1'b1;
-	
-	#5 reset = 1'b0;
-	 
-	#75 reset = 1'b1;
-	
-	#5 reset = 1'b0;
-	 
-	#25 $stop;
-end
-
-always #2 clk = ~clk;
+	// execute always
+	always #2 clk = ~clk;
 
 endmodule
